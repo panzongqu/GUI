@@ -37,14 +37,14 @@ public class ConfigureSerial {
 	@SuppressWarnings("unchecked")
 	public void refreshSerialInfo(){
 		Vector<String> portComboBoxItems= new Vector<String>();
-		Component[] components = cbbpanel.getComponents();	
+		Component[] components = dialog.getComBoBox().getComponents();	
 		Enumeration<CommPortIdentifier> ports = CommPortIdentifier.getPortIdentifiers(); 
        while(ports.hasMoreElements()) {
        	portComboBoxItems.add(((CommPortIdentifier)ports.nextElement()).getName());	        		        	
        } 		
 		
 		for(int i=0; i<components.length; i++){
-			if(components[i].getName().toString().equals("po_comboBox")){
+			if(components[i].getName().toString().equals("Port")){
 				@SuppressWarnings("rawtypes")
 				JComboBox portComboBox = (JComboBox) components[i];	
 				portComboBox.setModel(new DefaultComboBoxModel<String>(portComboBoxItems));
@@ -55,7 +55,7 @@ public class ConfigureSerial {
 	
 	public void testConfigurationData()
 	{
-		Component[] components = cbbpanel.getComponents();
+		Component[] components = dialog.getComBoBox().getComponents();
 		System.out.println(components.length);
 		for(int i=0; i<components.length; i++){
 			System.out.println(components[i].getName());
@@ -80,10 +80,9 @@ public class ConfigureSerial {
 
 	
 	private boolean getSelectedCheckBox(String name){
-		Component[] components = chckpanel.getComponents();
+		Component[] components = dialog.getCheckBoBox().getComponents();
 		for(int i=0; i<components.length; i++){
 			if(components[i].getName().toString().equals(name)){
-				@SuppressWarnings("rawtypes")
 				JCheckBox checkBox = (JCheckBox) components[i];		
 				return checkBox.isSelected();	
 			
@@ -93,9 +92,9 @@ public class ConfigureSerial {
 	}	
 	
 	private String getSelectedPortName(){
-		Component[] components = cbbpanel.getComponents();
+		Component[] components = dialog.getComBoBox().getComponents();
 		for(int i=0; i<components.length; i++){
-			if(components[i].getName().toString().equals("po_comboBox")){
+			if(components[i].getName().toString().equals("Port")){
 				@SuppressWarnings("rawtypes")
 				JComboBox comboBox = (JComboBox) components[i];
 				return comboBox.getSelectedItem().toString();		
@@ -105,9 +104,9 @@ public class ConfigureSerial {
 	}
 	
 	private int getSelectedBaudRate(){
-		Component[] components = cbbpanel.getComponents();
+		Component[] components = dialog.getComBoBox().getComponents();
 		for(int i=0; i<components.length; i++){
-			if(components[i].getName().toString().equals("ba_comboBox")){
+			if(components[i].getName().toString().equals("Buad rate")){
 				@SuppressWarnings("rawtypes")
 				JComboBox comboBox = (JComboBox) components[i];		
 				return Integer.parseInt((String)comboBox.getSelectedItem());	
@@ -117,21 +116,9 @@ public class ConfigureSerial {
 	}
 
 	private int getSelectedDataBits(){
-		Component[] components = cbbpanel.getComponents();
+		Component[] components = dialog.getComBoBox().getComponents();
 		for(int i=0; i<components.length; i++){
-			if(components[i].getName().toString().equals("da_comboBox")){
-				@SuppressWarnings("rawtypes")
-				JComboBox comboBox = (JComboBox) components[i];		
-				return Integer.parseInt((String)comboBox.getSelectedItem());	
-			}
-		}
-		return 0;
-	}
-
-	private int getSelectedStopBits(){
-		Component[] components = cbbpanel.getComponents();
-		for(int i=0; i<components.length; i++){
-			if(components[i].getName().toString().equals("st_comboBox")){
+			if(components[i].getName().toString().equals("Data bits")){
 				@SuppressWarnings("rawtypes")
 				JComboBox comboBox = (JComboBox) components[i];		
 				return Integer.parseInt((String)comboBox.getSelectedItem());	
@@ -141,10 +128,10 @@ public class ConfigureSerial {
 	}
 	
 	private int getSelectedParity(){
-		Component[] components = cbbpanel.getComponents();
+		Component[] components = dialog.getComBoBox().getComponents();
 		System.out.println(components.length);
 		for(int i=0; i<components.length; i++){
-			if(components[i].getName().toString().equals("pa_comboBox")){
+			if(components[i].getName().toString().equals("Parity")){
 				@SuppressWarnings("rawtypes")
 				JComboBox comboBox = (JComboBox) components[i];	
 				if(comboBox.getSelectedItem().toString().equals("None")){
@@ -162,7 +149,19 @@ public class ConfigureSerial {
 		}
 		return -1;
 	}
-		
+	
+	private int getSelectedStopBits(){
+		Component[] components = dialog.getComBoBox().getComponents();
+		for(int i=0; i<components.length; i++){
+			if(components[i].getName().toString().equals("Stop bits")){
+				@SuppressWarnings("rawtypes")
+				JComboBox comboBox = (JComboBox) components[i];		
+				return Integer.parseInt((String)comboBox.getSelectedItem());	
+			}
+		}
+		return 0;
+	}
+	
    public void serialConnect() throws Exception {  
        CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());  
   
