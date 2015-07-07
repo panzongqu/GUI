@@ -6,8 +6,10 @@ import java.util.Enumeration;
    
 public class ListAvailablePorts {  
    
+	private Enumeration ports;
+	
     public void list() {  
-        Enumeration ports = CommPortIdentifier.getPortIdentifiers();  
+        ports = CommPortIdentifier.getPortIdentifiers();  
           
         while(ports.hasMoreElements())  
             System.out.println(((CommPortIdentifier)ports.nextElement()).getName());  
@@ -17,11 +19,5 @@ public class ListAvailablePorts {
     
     public static void main(String[] args) {  
         new ListAvailablePorts().list();  
-        
-        ConfigureSerialGui hh= new ConfigureSerialGui();
-        
-		hh.setDefaultCloseOperation(hh.DISPOSE_ON_CLOSE);
-		hh.setVisible(true);
-        hh.testConfigurationData();
     }  
 } 

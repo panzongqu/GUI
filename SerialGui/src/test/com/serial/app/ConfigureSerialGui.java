@@ -76,7 +76,8 @@ public class ConfigureSerialGui extends JDialog {
 	private JPanel buttonPane;
 	private JPanel panel;
 	
-	private SerialConfigureData currentConfigureData = new SerialConfigureData(); 
+	private SerialConfigureData currentConfigureData = new SerialConfigureData();
+	private boolean newConfigureData=false;
 	/**
 	 * Launch the application.
 	*/
@@ -91,7 +92,20 @@ public class ConfigureSerialGui extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+/*		
+		public void testConfigurationData()
+		{
+			Component[] components = getComBoBox().getComponents();
+			System.out.println(components.length);
+			for(int i=0; i<components.length; i++){
+				System.out.println(components[i].getName());
+				@SuppressWarnings("rawtypes")
+				JComboBox comboBox = (JComboBox) components[i];
+				System.out.println(comboBox.getSelectedItem());		
+			}
+		}*/
 	}
+	
 	public JPanel getComBoBox() {
 		return cbbpanel;
 	}
@@ -104,6 +118,18 @@ public class ConfigureSerialGui extends JDialog {
 		return currentConfigureData;	
 	}
 
+	public boolean isNewConfigureData(){
+		return newConfigureData;
+	}		
+	
+	public void clearNewConfigureDataFlag(){
+		newConfigureData=false;
+	}
+	
+	private void setNewConfigureDataFlag(){
+		newConfigureData=true;
+	}
+	
 	private void updateCurrentConfigureData(){
 		currentConfigureData.setPortName(getSelectedPortName());
 		currentConfigureData.setBaudRate(getSelectedBaudRate());
@@ -134,18 +160,6 @@ public class ConfigureSerialGui extends JDialog {
 		}
 	}
 	
-	public void testConfigurationData()
-	{
-		Component[] components = getComBoBox().getComponents();
-		System.out.println(components.length);
-		for(int i=0; i<components.length; i++){
-			System.out.println(components[i].getName());
-			@SuppressWarnings("rawtypes")
-			JComboBox comboBox = (JComboBox) components[i];
-			System.out.println(comboBox.getSelectedItem());		
-		}
-	}
-
 	private boolean getSelectedCheckBox(String name){
 		Component[] components = getCheckBoBox().getComponents();
 		for(int i=0; i<components.length; i++){
@@ -228,19 +242,6 @@ public class ConfigureSerialGui extends JDialog {
 		return 0;
 	}
 	
-   public void serialConnect() throws Exception {  
-       CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());  
-  
-       if (portIdentifier.isCurrentlyOwned()) {  
-           System.out.println("Port in use!");  
-       } else {  
-           SerialPort serialPort = (SerialPort) portIdentifier.open("MySerial", 2000);   
-           serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
-           		currentConfigureData.getStopBits(), currentConfigureData.getParity()); 
-           serialPort.setDTR(currentConfigureData.getdtrDsr());
-           serialPort.setRTS(currentConfigureData.getRtsCts());
-       }  
-   }  
 	
 	/**
 	 * Create the dialog.
@@ -408,6 +409,7 @@ public class ConfigureSerialGui extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						updateCurrentConfigureData();
+						setNewConfigureDataFlag();
 						System.out.println("Apply"); 
 					}
 				});
@@ -428,5 +430,6 @@ public class ConfigureSerialGui extends JDialog {
 			}
 		}
 		sl_contentPanel.putConstraint(SpringLayout.SOUTH, panel, -61, SpringLayout.NORTH, buttonPane);
+		refreshSerialPortInfo();
 	}
 }
