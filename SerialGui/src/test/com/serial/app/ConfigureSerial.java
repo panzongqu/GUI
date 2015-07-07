@@ -35,11 +35,10 @@ public class ConfigureSerial {
 */
 	private ConfigureSerialGui dialog;
 	private SerialPort serialPort;
-	private String currentPortName;
+	private CommPortIdentifier portIdentifier;
 	
 	public ConfigureSerial(){
 		dialog = new ConfigureSerialGui();
-		currentPortName = "COM1";
 	}
 	 
    public void serialConnect() throws Exception {  
@@ -47,8 +46,21 @@ public class ConfigureSerial {
        SerialConfigureData currentConfigureData=dialog.getCurrentConfigureData();
 	   if(dialog.isNewConfigureData()){
 		   dialog.clearNewConfigureDataFlag();
-		   		   
-		   CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());
+	
+		   if(currentConfigureData.getPortName().equals(portIdentifier.getName())){
+	           serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
+	              		currentConfigureData.getStopBits(), currentConfigureData.getParity()); 
+	              serialPort.setDTR(currentConfigureData.getdtrDsr());
+	              serialPort.setRTS(currentConfigureData.getRtsCts());
+		   }else{
+			   
+			   
+		   }
+		   
+		   
+		   
+		   portIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());
+		   
 		   if(portIdentifier.isCurrentlyOwned()){
 			   if(currentConfigureData.getPortName().equals(currentPortName)){   
 		           serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
