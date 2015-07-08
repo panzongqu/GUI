@@ -85,9 +85,9 @@ public class ConfigureSerialGui extends JDialog {
 		try {
 			ConfigureSerialGui dialog = new ConfigureSerialGui();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			//dialog.refreshSerialInfo();
+			dialog.refreshSerialPortInfo();
 			//dialog.testConfigurationData();
-			//dialog.getSelectedBaudRate();
+			dialog.getSelectedBaudRate();
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -430,6 +430,9 @@ public class ConfigureSerialGui extends JDialog {
 			}
 		}
 		sl_contentPanel.putConstraint(SpringLayout.SOUTH, panel, -61, SpringLayout.NORTH, buttonPane);
+		
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		refreshSerialPortInfo();
+		setVisible(true);
 	}
 }

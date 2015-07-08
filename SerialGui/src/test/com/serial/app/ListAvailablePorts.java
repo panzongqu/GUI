@@ -2,6 +2,9 @@ package com.serial.app;
 
 import gnu.io.CommPortIdentifier;  
    
+
+import gnu.io.NoSuchPortException;
+
 import java.util.Enumeration;  
    
 public class ListAvailablePorts {  
@@ -11,8 +14,16 @@ public class ListAvailablePorts {
     public void list() {  
         ports = CommPortIdentifier.getPortIdentifiers();  
           
-        while(ports.hasMoreElements())  
-            System.out.println(((CommPortIdentifier)ports.nextElement()).getName());  
+        while(ports.hasMoreElements()){
+        	String name=((CommPortIdentifier)ports.nextElement()).getName();
+            System.out.println(name);  
+            try {
+				System.out.println(CommPortIdentifier.getPortIdentifier(name).isCurrentlyOwned());
+			} catch (NoSuchPortException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}    	
+        }  
     }  
    
     
