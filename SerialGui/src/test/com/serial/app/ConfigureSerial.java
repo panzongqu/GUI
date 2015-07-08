@@ -2,7 +2,9 @@ package com.serial.app;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
 
 import java.awt.Component;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import javax.swing.JDialog;
 import com.serial.api.CommPortReceiver;
 import com.serial.api.CommPortSender;
 import com.serial.api.SerialConfigureData;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 public class ConfigureSerial {
 
@@ -39,7 +42,6 @@ public class ConfigureSerial {
 
 	private ConfigureSerialGui dialog;
 	private SerialPort serialPort;
-	private CommPortIdentifier portIdentifier;
 	private CommPortReceiver commPortReceiver;
 	
 	public ConfigureSerial(){
@@ -58,37 +60,67 @@ public class ConfigureSerial {
     	serialPort.close();
     }
 	
-   public void serialConnect() throws Exception {  
+   public String serialConnect() {  
 	   
        SerialConfigureData currentConfigureData=dialog.getCurrentConfigureData();
 	   if(dialog.isNewConfigureData()){
 		   dialog.clearNewConfigureDataFlag();
 	
-		   if(currentConfigureData.getPortName().equals(portIdentifier.getName())){
-	           serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
-	              		currentConfigureData.getStopBits(), currentConfigureData.getParity()); 
-	              serialPort.setDTR(currentConfigureData.getdtrDsr());
-	              serialPort.setRTS(currentConfigureData.getRtsCts());
-		   }else{
-			   //new connect
-			   CommPortIdentifier newPortIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());
-			   if(newPortIdentifier.isCurrentlyOwned()){
-				   System.out.println("Port in use!"); 
-			   }else{				   
-				   serialPort = (SerialPort) newPortIdentifier.open("MySerial", 2000);
-				   serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
-			           		currentConfigureData.getStopBits(), currentConfigureData.getParity()); 
-		           serialPort.setDTR(currentConfigureData.getdtrDsr());
-		           serialPort.setRTS(currentConfigureData.getRtsCts());	 
-		           
-		           portIdentifier = newPortIdentifier;	           
-		           CommPortSender.setWriterStream(serialPort.getOutputStream());		            	            
-		           commPortReceiver = new CommPortReceiver(serialPort.getInputStream());  
-		           commPortReceiver.start();				   							   
-			   }		   
-		   }   
-	   }else{
-		   //default COM1
-	   }
+		   CommPortIdentifier portIdentifier;
+			try {
+				portIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());
+			} catch (NoSuchPortException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("NoSuchPort");
+				return "NoSuchPort";
+			}
+		   if(portIdentifier.isCurrentlyOwned()){
+			   try {
+				serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
+				       		currentConfigureData.getStopBits(), currentConfigureData.getParity());
+				} catch (UnsupportedCommOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+	           serialPort.setDTR(currentConfigureData.getdtrDsr());
+	           serialPort.setRTS(currentConfigureData.getRtsCts());	 
+		   }else{				   
+			   try {
+				serialPort = (SerialPort) portIdentifier.open("MySerial", 2000);
+			} catch (PortInUseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("PortInUse");
+				return "PortInUse";
+			}
+			   try {
+				serialPort.setSerialPortParams(currentConfigureData.getBaudRate(), currentConfigureData.getDataBits(), 
+				       		currentConfigureData.getStopBits(), currentConfigureData.getParity());
+			} catch (UnsupportedCommOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+	           serialPort.setDTR(currentConfigureData.getdtrDsr());
+	           serialPort.setRTS(currentConfigureData.getRtsCts());	 
+	                      
+	           try {
+				CommPortSender.setWriterStream(serialPort.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		            	            
+	           try {
+				commPortReceiver = new CommPortReceiver(serialPort.getInputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+	           commPortReceiver.start();				   							   
+		   }		   
+	   }   
+	   return null;
    }  	
+
+
 }

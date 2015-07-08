@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.concurrent.Delayed;
 
 import gnu.io.CommPortIdentifier;  
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import gnu.io.SerialPort;  
+import gnu.io.UnsupportedCommOperationException;
 
 import com.serial.api.*;
 public class RS232Example {  
@@ -12,24 +15,52 @@ public class RS232Example {
 	SerialPort serialPort;
 	CommPortIdentifier portIdentifier;
 	CommPortReceiver commPortReceiver;
-    public void connect(String portName) throws Exception {  
-        portIdentifier = CommPortIdentifier.getPortIdentifier(portName);  
+    public void connect(String portName) {  
+        try {
+			portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+		} catch (NoSuchPortException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("NoSuchPort");
+		}  
    
         if (portIdentifier.isCurrentlyOwned()) {  
             System.out.println("Port in use!");  
         } else {  
             // points who owns the port and connection timeout  
-            serialPort = (SerialPort) portIdentifier.open("RS232Example", 2000);  
+            try {
+				serialPort = (SerialPort) portIdentifier.open("RS232Example", 2000);
+			} catch (PortInUseException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				System.out.println("PortInUse");
+				return;
+			}  
               
             // setup connection parameters  
-            serialPort.setSerialPortParams(  
-                115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);  
+            try {
+				serialPort.setSerialPortParams(  
+				    115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+			} catch (UnsupportedCommOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
    
             // setup serial port writer  
-            CommPortSender.setWriterStream(serialPort.getOutputStream());  
+            try {
+				CommPortSender.setWriterStream(serialPort.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
               
             // setup serial port reader  
-            commPortReceiver = new CommPortReceiver(serialPort.getInputStream());  
+            try {
+				commPortReceiver = new CommPortReceiver(serialPort.getInputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
             commPortReceiver.start();
         }  
         System.out.println(portIdentifier.getName());  
