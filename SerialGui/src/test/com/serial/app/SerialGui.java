@@ -11,7 +11,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
-public class RS232Gui extends JFrame {
+public class SerialGui extends JFrame {
 
 	private JPanel contentPane;
 
@@ -22,7 +22,7 @@ public class RS232Gui extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RS232Gui frame = new RS232Gui();
+					SerialGui frame = new SerialGui();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -34,7 +34,7 @@ public class RS232Gui extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RS232Gui() {
+	public SerialGui() {
 		setTitle("RS232Gui");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
