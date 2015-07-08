@@ -1,0 +1,6 @@
+#name;offset;byte length;init value;
+
+jName1;0;1;0x55;
+jName2;1;1;0xAA;
+jName3;10;2;0x00;
+jName4;20;4;1.0;

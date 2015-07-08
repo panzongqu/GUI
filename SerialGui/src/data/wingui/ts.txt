@@ -1,0 +1,6 @@
+#name;offset;byte length;init value;
+
+tName1;0;1;0x55;
+tName2;1;1;0xAA;
+tName3;10;2;0x00;
+tName4;20;4;1.0;
