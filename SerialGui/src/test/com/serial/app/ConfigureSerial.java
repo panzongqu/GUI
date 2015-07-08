@@ -71,7 +71,7 @@ public class ConfigureSerial {
 				portIdentifier = CommPortIdentifier.getPortIdentifier(currentConfigureData.getPortName());
 			} catch (NoSuchPortException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println("NoSuchPort");
 				return "NoSuchPort";
 			}
@@ -90,7 +90,7 @@ public class ConfigureSerial {
 				serialPort = (SerialPort) portIdentifier.open("MySerial", 2000);
 			} catch (PortInUseException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println("PortInUse");
 				return "PortInUse";
 			}
